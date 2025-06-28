@@ -1,7 +1,9 @@
+# requirements.txt
+
 flask
 gunicorn
 torch
 torchaudio
-fairseq
 soundfile
 numpy
+git+https://github.com/facebookresearch/fairseq.git@v0.12.2
