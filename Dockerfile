@@ -1,9 +1,8 @@
 FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install OS dependencies including g++
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
@@ -15,15 +14,16 @@ RUN apt-get update && apt-get install -y \
 # Copy project files
 COPY . .
 
-# Upgrade pip and install Python dependencies
+# Install Python dependencies
 RUN pip install --upgrade pip==23.3.2 \
  && pip install --no-cache-dir -r requirements.txt
 
-# Download Kannada model from Vakyansh official storage
-RUN wget https://storage.googleapis.com/vakyansh-open-models/models/kannada/kn-IN/kannada_infer.pt -O kannada_infer.pt
+# Create kn_model folder and download the Kannada model
+RUN mkdir -p kn_model \
+ && wget https://storage.googleapis.com/vakyansh-open-models/models/kannada/kn-IN/kannada_infer.pt -O kn_model/kannada_infer.pt
 
-# Expose the Flask app port
+# Expose port
 EXPOSE 5000
 
-# Start the app using Gunicorn
+# Start the app
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
