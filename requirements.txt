@@ -1,9 +1,7 @@
-# requirements.txt
-
-flask
-gunicorn
-torch
-torchaudio
-soundfile
-numpy
+flask==3.1.1
+gunicorn==23.0.0
+torch==2.1.0
+torchaudio==2.1.0
+soundfile==0.12.1
+numpy==1.24.4
 git+https://github.com/facebookresearch/fairseq.git@v0.12.2

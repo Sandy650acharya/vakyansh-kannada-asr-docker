@@ -2,23 +2,32 @@ import torch
 import torchaudio
 import os
 
-from fairseq.models.wav2vec.wav2vec2_asr import Wav2VecCtc
+# 🛠 Dummy class to support model unpickling
+class Wav2VecCtc:
+    def __init__(self, *args, **kwargs):
+        pass
 
-# Register the safe class so PyTorch knows how to unpickle the model
-torch.serialization.add_safe_class(Wav2VecCtc)
+# 🛠 Make the class visible to pickle loader
+import builtins
+builtins.Wav2VecCtc = Wav2VecCtc
 
-# Load model path
+# 🗂️ Model & dictionary paths
 MODEL_PATH = "kn_model/kannada_infer.pt"
 DICT_PATH = "kn_model/dict.ltr.txt"
 
 print("🔁 Loading Kannada ASR model...")
 
-# Safely load full model checkpoint
-checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=False)
-model = checkpoint["model"]
+# ✅ Safe model load
+checkpoint = torch.load(MODEL_PATH, map_location=torch.device("cpu"), weights_only=False)
+model_state = checkpoint["model"]
+model_args = checkpoint["args"]
+
+from fairseq.models.wav2vec import Wav2Vec2Model
+model = Wav2Vec2Model.build_model(model_args, task=None)
+model.load_state_dict(model_state)
 model.eval()
 
-# Load dictionary
+# 📖 Load char dictionary
 with open(DICT_PATH, "r", encoding="utf-8") as f:
     index_to_char = [line.split()[0] for line in f]
 
