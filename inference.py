@@ -2,8 +2,10 @@ import torch
 import torchaudio
 import os
 
-from fairseq.checkpoint_utils import load_model_ensemble_and_task
-from fairseq import tasks
+# Dummy class required for loading the checkpoint
+class Wav2VecCtc(torch.nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
 
 # Model and dictionary paths
 MODEL_PATH = "kn_model/kannada_infer.pt"
@@ -11,19 +13,19 @@ DICT_PATH = "kn_model/dict.ltr.txt"
 
 print("🔁 Loading Kannada ASR model...")
 
-# Load model using fairseq utilities (safe method)
-models, cfg, task = load_model_ensemble_and_task([MODEL_PATH])
-model = models[0]
+# Load model safely
+cp = torch.load(MODEL_PATH, map_location=torch.device("cpu"), weights_only=False)
+model = cp['model']
 model.eval()
 
 # Load dictionary
 with open(DICT_PATH, "r", encoding="utf-8") as f:
     index_to_char = [line.split()[0] for line in f]
 
+# Transcription function
 def transcribe(audio_path):
     waveform, sr = torchaudio.load(audio_path)
 
-    # Resample if needed
     if sr != 16000:
         resampler = torchaudio.transforms.Resample(orig_freq=sr, new_freq=16000)
         waveform = resampler(waveform)
