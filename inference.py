@@ -9,7 +9,8 @@ MODEL_PATH = "kn_model/kannada_infer.pt"
 DICT_PATH = "kn_model/dict.ltr.txt"
 
 print("🔁 Loading Kannada ASR model...")
-cp = torch.load(MODEL_PATH)
+cp = torch.load(MODEL_PATH, weights_only=False)  # explicitly allow full model unpickling
+
 model = Wav2Vec2Model.build_model(cp['args'], task=None)
 model.load_state_dict(cp['model'])
 model.eval()
