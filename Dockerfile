@@ -20,7 +20,7 @@ RUN pip install --upgrade pip==23.3.2 \
 
 # Create kn_model folder and download the Kannada model
 RUN mkdir -p kn_model \
- && wget https://storage.googleapis.com/vakyansh-open-models/models/kannada/kn-IN/kannada_infer.pt -O kn_model/kannada_infer.pt
+ && wget https://storage.googleapis.com/vakyansh-open-models/models/kannada/kn-IN/kannada_infer.pt -O kannada_infer.pt
 
 # Expose port
 EXPOSE 5000
