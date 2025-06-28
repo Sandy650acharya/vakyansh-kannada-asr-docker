@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: vakyansh-kannada-asr
+    env: docker
+    plan: free
+    autoDeploy: true
